@@ -9,6 +9,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 # Get non-open-source specific aspects
 $(call inherit-product, vendor/oneplus/sm8150-common/sm8150-common-vendor.mk)
 
+# Oneplus apps
+$(call inherit-product-if-exists, vendor/oneplus/camera/camera-vendor.mk)
+
 # Get Perf aspects
 $(call inherit-product, device/qcom/common/system/perf/qti-perf.mk)
 $(call inherit-product, device/qcom/common/vendor/perf-legacy/qti-perf-legacy.mk)
@@ -27,7 +30,7 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/emulated_storage.mk)
 $(call inherit-product, $(LOCAL_PATH)/interfaces.mk)
 
 # Dalvik
-$(call inherit-product, frameworks/native/build/phone-xhdpi-6144-dalvik-heap.mk)
+$(call inherit-product, frameworks/native/build/phone-xhdpi-8192-dalvik-heap.mk)
 
 # Additional native libraries
 PRODUCT_COPY_FILES += \
@@ -36,7 +39,7 @@ PRODUCT_COPY_FILES += \
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += \
     $(LOCAL_PATH)/overlay \
-    $(LOCAL_PATH)/overlay-yaap
+    $(LOCAL_PATH)/overlay-aosp
 
 PRODUCT_ENFORCE_RRO_TARGETS := *
 
@@ -177,10 +180,29 @@ PRODUCT_PACKAGES += \
     vendor.oneplus.hardware.camera@1.0.vendor:64 \
     vendor.qti.hardware.camera.device@1.0.vendor:64
 
+PRODUCT_VENDOR_PROPERTIES += \
+    vendor.product.manufacturer=OPD \
+    ro.vendor.camera.res.fmq.size=1048576
+
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.com.google.lens.oem_camera_package=com.oneplus.camera
+
+PRODUCT_SYSTEM_PROPERTIES += \
+    persist.camera.assert.panic=true \
+    persist.camera.privapp.list=com.oneplus.factorymode,com.oneplus.camera,com.oem.autotest,com.oneplus.healthcheck \
+    ro.opcamera.support=true \
+    ro.vendor.product.manufacturer.db=OP_PHONE \
+    ro.vendor.product.device.db=OP_DEVICE
+
+PRODUCT_SYSTEM_EXT_PROPERTIES += \
+    persist.vendor.camera.privapp.list=com.oneplus.factorymode,com.oneplus.camera,com.oem.autotest,com.oneplus.healthcheck \
+    vendor.camera.aux.packagelist=org.codeaurora.snapcam,com.oneplus.factorymode,com.oneplus.camera
+
 # Common init scripts
 PRODUCT_PACKAGES += \
     init.class_main.sh \
     init.oem.rc \
+    init.opcamera.rc \
     init.qcom.class_core.sh \
     init.qcom.early_boot.sh \
     init.qcom.post_boot.sh \
@@ -311,6 +333,14 @@ PRODUCT_PACKAGES += \
     SecureElement \
     Tag \
     android.hardware.nfc@1.2-service
+
+PRODUCT_VENDOR_PROPERTIES += \
+    ro.camera.notify_nfc=1
+
+# OnePlus Apps
+PRODUCT_PACKAGES += \
+    OnePlusCameraOverlay \
+    OnePlusGalleryOverlay
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/nfc/libnfc-nxp.conf:$(TARGET_COPY_OUT_VENDOR)/etc/libnfc-nxp.conf \
@@ -457,13 +487,6 @@ PRODUCT_PACKAGES += \
     libnl \
     libwfdaac_vendor
 
-# Dex to make OTA go faster
-PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    dalvik.vm.boot-dex2oat-cpu-set=1,2,3,4,5,6,7 \
-    dalvik.vm.boot-dex2oat-threads=7 \
-    dalvik.vm.image-dex2oat-cpu-set=0,1,2,3,4,5,6,7 \
-    dalvik.vm.image-dex2oat-threads=8
-
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     ro.surface_flinger.force_hwc_copy_for_virtual_displays=true \
     ro.surface_flinger.has_HDR_display=true \
@@ -473,3 +496,10 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     ro.surface_flinger.protected_contents=true \
     ro.surface_flinger.use_color_management=true \
     ro.surface_flinger.wcg_composition_dataspace=143261696
+
+PRODUCT_PACKAGES += \
+    Aperture
+    
+# grant apps where not whitelisted of signature|Permissions
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.control_privapp_permissions=log

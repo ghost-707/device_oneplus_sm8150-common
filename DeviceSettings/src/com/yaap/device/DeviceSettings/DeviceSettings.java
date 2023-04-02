@@ -59,7 +59,7 @@ public class DeviceSettings extends PreferenceFragment
 
     public static final String KEY_SETTINGS_PREFIX = "device_setting_";
 
-    private static final String POPUP_HELPER_PKG_NAME = "org.lineageos.camerahelper";
+    private static final String POPUP_HELPER_PKG_NAME = "org.pixelexperience.camerahelper";
 
     private TwoStatePreference mDCModeSwitch;
     private TwoStatePreference mHBMModeSwitch;
