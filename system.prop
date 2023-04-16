@@ -12,7 +12,8 @@ persist.vendor.btstack.enable.twsplus=true
 persist.vendor.bt.a2dp.aac_whitelist=false
 
 # Camera
-persist.vendor.camera.privapp.list=com.oneplus.camera
+camera.disable_zsl_mode=true
+vendor.camera.aux.packagelist=org.lineageos.aperture,com.oneplus.camera
 
 # Charger
 ro.charger.enable_suspend=true
@@ -59,7 +60,7 @@ ro.netflix.bsp_rev=Q855-16947-1
 ro.vendor.qti.sys.fw.bg_apps_limit=60
 
 # Priv-app permissions whitelist
-ro.control_privapp_permissions=enforce
+ro.control_privapp_permissions=log
 
 # QC framework value-adds
 ro.vendor.qti.va_aosp.support=1
